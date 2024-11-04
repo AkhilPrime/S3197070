@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "562201193085",
+    "project_id": "dictionary-53f8a",
+    "storage_bucket": "dictionary-53f8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562201193085:android:a7fdcd3e3694da47311f14",
+        "android_client_info": {
+          "package_name": "uk.ac.tees.mad.univid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBANMK-IOBRL5lH2Fqv6oqe2hl4Uqa8WYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
