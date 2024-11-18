@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import uk.ac.tees.mad.univid.authentication.model.CurrentUser
 import uk.ac.tees.mad.univid.authentication.utils.Response
 import javax.inject.Inject
 

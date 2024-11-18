@@ -2,9 +2,10 @@ package uk.ac.tees.mad.univid.authentication.repository
 
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.flow.Flow
+import uk.ac.tees.mad.univid.authentication.model.CurrentUser
 import uk.ac.tees.mad.univid.authentication.utils.Response
 
-interface AuthRepository {
+interface AuthRepository{
 
     fun LogInUser(email: String, password: String): Flow<Response<AuthResult>>
 

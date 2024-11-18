@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
+import uk.ac.tees.mad.univid.authentication.model.CurrentUser
 import uk.ac.tees.mad.univid.authentication.repository.AuthRepository
 import uk.ac.tees.mad.univid.authentication.state.AuthState
 import uk.ac.tees.mad.univid.authentication.utils.Response
@@ -17,7 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AuthRepository
+    private val repository: AuthRepository,
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ): ViewModel() {
 
     private val _authstate = MutableStateFlow<AuthState>(AuthState.idle)
@@ -25,6 +29,9 @@ class AuthViewModel @Inject constructor(
 
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn = _isLoggedIn.asStateFlow()
+
+    private val _currentUser = MutableStateFlow<CurrentUser?>(null)
+    val currentUser = _currentUser.asStateFlow()
 
     init {
         checkIfUserLoggedIn()
@@ -86,5 +93,33 @@ class AuthViewModel @Inject constructor(
         repository.SignOut()
         _authstate.value = AuthState.idle
         _isLoggedIn.value = false
+    }
+
+    fun fetchCurrentUser(){
+        val user = auth.currentUser
+        _authstate.value = AuthState.loading
+        if (user != null){
+            val userId = user.uid
+            firestore.collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener {
+                    if (it.exists()){
+                        val name = it.getString("name") ?: ""
+                        val email = it.getString("email") ?: ""
+                        val imgUrl = it.getString("profilepictureurl") ?: ""
+                        val fetchedUser = CurrentUser(name, email, imgUrl)
+                        _currentUser.value = fetchedUser
+                        _authstate.value = AuthState.success
+                    }else{
+                        signOut()
+                    }
+                }
+                .addOnFailureListener {
+                    signOut()
+                    _authstate.value = AuthState.failure(it.message.toString())
+                    Log.i("The error: ", "Cannot fetch the user")
+                }
+        }
     }
 }

@@ -68,7 +68,6 @@ fun LogInScreen(
             }
         }
         is AuthState.failure->{
-            Log.i("The error: ", "Authentication can't be completed")
             Toast.makeText(context, "Unable to Login! Check the details", Toast.LENGTH_LONG).show()
             email = ""
             password = ""

@@ -23,10 +23,9 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center
     ){
         Button(onClick = {
-            authViewModel.signOut()
-            navController.navigate("auth_graph")
+            navController.navigate("profile_screen")
         }) {
-            Text(text = "LogOut")
+            Text(text = "Profile Screen")
         }
     }
 }

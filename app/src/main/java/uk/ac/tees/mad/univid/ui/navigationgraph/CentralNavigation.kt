@@ -11,6 +11,7 @@ import uk.ac.tees.mad.univid.ui.authentication.CustomSplashScreen
 import uk.ac.tees.mad.univid.ui.homescreen.HomeScreen
 import uk.ac.tees.mad.univid.ui.authentication.LogInScreen
 import uk.ac.tees.mad.univid.ui.authentication.SignUpScreen
+import uk.ac.tees.mad.univid.ui.homescreen.ProfileScreen
 
 
 @Composable
@@ -45,6 +46,9 @@ fun CentralNavigation(
         navigation(startDestination = "home_screen", route = "home_graph"){
             composable("home_screen"){
                 HomeScreen(authViewModel, navController)
+            }
+            composable("profile_screen") {
+                ProfileScreen(authViewModel, navController)
             }
         }
     }

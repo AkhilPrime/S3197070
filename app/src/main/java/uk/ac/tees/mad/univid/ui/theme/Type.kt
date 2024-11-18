@@ -28,6 +28,12 @@ val poppinsFam = FontFamily(
     Font(googleFont = poppins, fontProvider = provider)
 )
 
+val merris = GoogleFont("Merriweather")
+
+val merrisFam = FontFamily(
+    Font(googleFont = merris, fontProvider = provider)
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
