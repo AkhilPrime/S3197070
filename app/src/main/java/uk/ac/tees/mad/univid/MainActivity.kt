@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.ac.tees.mad.univid.authentication.viewmodel.AuthViewModel
 import uk.ac.tees.mad.univid.ui.authentication.LogInScreen
 import uk.ac.tees.mad.univid.ui.authentication.SignUpScreen
+import uk.ac.tees.mad.univid.ui.homescreen.EditUserInformation
 import uk.ac.tees.mad.univid.ui.homescreen.ProfileScreen
 import uk.ac.tees.mad.univid.ui.navigationgraph.CentralNavigation
 import uk.ac.tees.mad.univid.ui.theme.DictionaryTheme

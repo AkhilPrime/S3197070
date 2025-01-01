@@ -1,14 +1,18 @@
 package uk.ac.tees.mad.univid.authentication.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import uk.ac.tees.mad.univid.authentication.model.CurrentUser
 import uk.ac.tees.mad.univid.authentication.repository.AuthRepository
@@ -23,6 +27,8 @@ class AuthViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ): ViewModel() {
+
+    val storage = Firebase.storage.reference
 
     private val _authstate = MutableStateFlow<AuthState>(AuthState.idle)
     val authState = _authstate.asStateFlow()
@@ -120,6 +126,69 @@ class AuthViewModel @Inject constructor(
                     _authstate.value = AuthState.failure(it.message.toString())
                     Log.i("The error: ", "Cannot fetch the user")
                 }
+        }
+    }
+
+    fun updateCurrentUser(name: String, email: String, password: String){
+        val currUser = auth.currentUser
+        if (currUser!=null){
+            val userId = currUser.uid
+            val userData = hashMapOf(
+                "name" to name,
+                "email" to email
+            )
+            val crediential = EmailAuthProvider.getCredential(currUser.email!!, password)
+            currUser.reauthenticate(crediential)
+                .addOnCompleteListener {
+                    firestore.collection("users")
+                        .document(userId)
+                        .update(userData as Map<String, Any>)
+                }
+                .addOnSuccessListener {
+                    currUser.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())
+                        .addOnCompleteListener {
+                            if (it.isSuccessful){
+                                Log.i("The Email: ", email)
+                                currUser.updateEmail(email).addOnCompleteListener {
+                                    fetchCurrentUser()
+                                }
+                            }
+                        }
+                }
+                .addOnFailureListener {
+                    _authstate.value = AuthState.failure("Unable to re-authenticate the user")
+                }
+        }else{
+            _authstate.value = AuthState.failure("Unable to authenticate")
+        }
+    }
+
+    fun updateProfileImage(uri: Uri){
+        val currentUser = auth.currentUser
+        if (currentUser!=null){
+            val userId = currentUser.uid
+            val imageRef = storage.child("users/${userId}/profile.jpg")
+
+            imageRef.putFile(uri)
+                .addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener {
+                        val imageLink = it.toString()
+
+                        val userData = hashMapOf(
+                            "profilepictureurl" to imageLink)
+                        firestore.collection("users")
+                            .document(userId)
+                            .update(userData as Map<String, Any>)
+                            .addOnSuccessListener {
+                                fetchCurrentUser()
+                            }
+                    }
+                }
+                .addOnFailureListener{
+                    Log.i("Error Encountered: ", "Unable to update the profile picture.")
+                }
+        }else{
+            Log.i("Error update:", "Current User is null")
         }
     }
 }

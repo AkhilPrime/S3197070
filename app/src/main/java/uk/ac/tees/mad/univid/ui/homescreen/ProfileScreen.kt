@@ -1,5 +1,6 @@
 package uk.ac.tees.mad.univid.ui.homescreen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
@@ -33,18 +35,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import uk.ac.tees.mad.univid.R
 import uk.ac.tees.mad.univid.authentication.viewmodel.AuthViewModel
 import uk.ac.tees.mad.univid.ui.theme.merrisFam
 import uk.ac.tees.mad.univid.ui.theme.poppinsFam
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel,
@@ -54,9 +60,13 @@ fun ProfileScreen(
     var menuVisi by remember{ mutableStateOf(false) }
     val currentUser by authViewModel.currentUser.collectAsState()
 
+    val width = LocalConfiguration.current.screenWidthDp.dp * 0.6f
+
     LaunchedEffect(key1 = Unit) {
         authViewModel.fetchCurrentUser()
     }
+
+    Log.i("The current user: ", "User is ${currentUser}")
 
     Scaffold (
         topBar = {
@@ -86,7 +96,9 @@ fun ProfileScreen(
                                 fontSize = 14.sp,
                                 fontFamily = poppinsFam
                             )
-                        }, onClick = { })
+                        }, onClick = {
+                            navController.navigate("edit_screen")
+                        })
 
                         DropdownMenuItem(text = {
                             Text(
@@ -133,9 +145,12 @@ fun ProfileScreen(
                     .fillMaxWidth(0.9f),
                 shape = RoundedCornerShape(20.dp)
             ){
-                Image(
-                    painter = painterResource(id = R.drawable.avatar),
-                    contentDescription = "Profile picture"
+                GlideImage(
+                    model = currentUser?.profileImgUrl,
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .size(width),
+                    failure = placeholder(R.drawable.avatar)
                 )
             }
             Spacer(modifier = Modifier.weight(0.2f))

@@ -64,9 +64,17 @@ fun CustomSplashScreen(
             LaunchedEffect(key1 = Unit){
                 delay( 3000L)
                 if (isLoggedIn){
-                    navController.navigate("home_graph")
+                    navController.navigate("home_graph"){
+                        popUpTo(navController.graph.startDestinationId){
+                            inclusive = true
+                        }
+                    }
                 }else{
-                    navController.navigate("auth_graph")
+                    navController.navigate("auth_graph"){
+                        popUpTo(navController.graph.startDestinationId){
+                            inclusive = true
+                        }
+                    }
                 }
             }
 

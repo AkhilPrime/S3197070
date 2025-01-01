@@ -11,6 +11,7 @@ import uk.ac.tees.mad.univid.ui.authentication.CustomSplashScreen
 import uk.ac.tees.mad.univid.ui.homescreen.HomeScreen
 import uk.ac.tees.mad.univid.ui.authentication.LogInScreen
 import uk.ac.tees.mad.univid.ui.authentication.SignUpScreen
+import uk.ac.tees.mad.univid.ui.homescreen.EditUserInformation
 import uk.ac.tees.mad.univid.ui.homescreen.ProfileScreen
 
 
@@ -19,8 +20,6 @@ fun CentralNavigation(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ){
-
-    val isLoggedIn = authViewModel.isLoggedIn.collectAsState()
 
     NavHost(
         navController = navController,
@@ -49,6 +48,12 @@ fun CentralNavigation(
             }
             composable("profile_screen") {
                 ProfileScreen(authViewModel, navController)
+            }
+            composable("edit_screen") {
+                EditUserInformation(
+                    authViewModel = authViewModel,
+                    navController = navController
+                )
             }
         }
     }

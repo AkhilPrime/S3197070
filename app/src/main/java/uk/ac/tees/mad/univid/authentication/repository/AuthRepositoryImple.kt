@@ -1,6 +1,5 @@
 package uk.ac.tees.mad.univid.authentication.repository
 
-import androidx.compose.ui.util.fastCbrt
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -9,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import uk.ac.tees.mad.univid.authentication.model.CurrentUser
 import uk.ac.tees.mad.univid.authentication.utils.Response
 import javax.inject.Inject
 
