@@ -80,8 +80,7 @@ fun LogInScreen(
 
     Surface(
         modifier = Modifier
-            .fillMaxSize(),
-        color = Color.White
+            .fillMaxSize()
     ){
         Column(
             modifier = Modifier

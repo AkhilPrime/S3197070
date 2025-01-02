@@ -44,11 +44,12 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun checkIfUserLoggedIn(){
-        Log.i("the user: ", "The user is logged in already.")
         if (repository.IsLoggedIn()){
             _isLoggedIn.value = true
+            fetchCurrentUser()
         }else{
             _isLoggedIn.value = false
+            fetchCurrentUser()
         }
     }
 

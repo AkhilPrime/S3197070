@@ -3,12 +3,17 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("androidx.room")
     alias(libs.plugins.google.gms.google.services)
 }
 
 android {
     namespace = "uk.ac.tees.mad.univid"
     compileSdk = 34
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 
     defaultConfig {
         applicationId = "uk.ac.tees.mad.univid"
@@ -101,5 +106,17 @@ dependencies {
 
     //Glide Dependency
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+
+    //Retrofit dependency
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    //Room Implementation
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:2.6.1")
 
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -45,8 +47,10 @@ import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import uk.ac.tees.mad.univid.R
 import uk.ac.tees.mad.univid.authentication.viewmodel.AuthViewModel
+import uk.ac.tees.mad.univid.mainscreen.viewmodel.HomeViewModel
 import uk.ac.tees.mad.univid.ui.theme.merrisFam
 import uk.ac.tees.mad.univid.ui.theme.poppinsFam
 
@@ -54,7 +58,8 @@ import uk.ac.tees.mad.univid.ui.theme.poppinsFam
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    homeViewModel: HomeViewModel
 ) {
 
     var menuVisi by remember{ mutableStateOf(false) }
@@ -108,7 +113,7 @@ fun ProfileScreen(
                                 fontFamily = poppinsFam
                             )
                         }, onClick = {
-
+                            homeViewModel.changeTheme()
                         })
 
                         DropdownMenuItem(text = {
@@ -139,20 +144,15 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.Center
         ){
             Spacer(modifier = Modifier.weight(0.3f))
-
-            Card (
-                modifier = Modifier
-                    .fillMaxWidth(0.9f),
-                shape = RoundedCornerShape(20.dp)
-            ){
                 GlideImage(
                     model = currentUser?.profileImgUrl,
                     contentDescription = "Profile Picture",
                     modifier = Modifier
-                        .size(width),
+                        .clip(CircleShape)
+                        .size(width)
+                        .fillMaxWidth(),
                     failure = placeholder(R.drawable.avatar)
                 )
-            }
             Spacer(modifier = Modifier.weight(0.2f))
             Card (
                 modifier = Modifier

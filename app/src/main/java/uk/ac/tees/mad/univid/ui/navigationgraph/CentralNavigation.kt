@@ -7,18 +7,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import uk.ac.tees.mad.univid.authentication.viewmodel.AuthViewModel
+import uk.ac.tees.mad.univid.mainscreen.viewmodel.HomeViewModel
 import uk.ac.tees.mad.univid.ui.authentication.CustomSplashScreen
 import uk.ac.tees.mad.univid.ui.homescreen.HomeScreen
 import uk.ac.tees.mad.univid.ui.authentication.LogInScreen
 import uk.ac.tees.mad.univid.ui.authentication.SignUpScreen
 import uk.ac.tees.mad.univid.ui.homescreen.EditUserInformation
+import uk.ac.tees.mad.univid.ui.homescreen.FavouriteDetailScreen
+import uk.ac.tees.mad.univid.ui.homescreen.FavouriteScreen
 import uk.ac.tees.mad.univid.ui.homescreen.ProfileScreen
+import uk.ac.tees.mad.univid.ui.homescreen.WordDetailScreen
 
 
 @Composable
 fun CentralNavigation(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    homeViewModel: HomeViewModel
 ){
 
     NavHost(
@@ -44,16 +49,29 @@ fun CentralNavigation(
 
         navigation(startDestination = "home_screen", route = "home_graph"){
             composable("home_screen"){
-                HomeScreen(authViewModel, navController)
+                HomeScreen(authViewModel, navController, homeViewModel)
             }
             composable("profile_screen") {
-                ProfileScreen(authViewModel, navController)
+                ProfileScreen(authViewModel, navController, homeViewModel)
             }
             composable("edit_screen") {
                 EditUserInformation(
                     authViewModel = authViewModel,
-                    navController = navController
+                    navController = navController,
+                    homeViewModel= homeViewModel
                 )
+            }
+            composable("wordDetailsScreen") {
+                WordDetailScreen(
+                    homeViewModel,
+                    navController
+                )
+            }
+            composable("favourite_screen") {
+                FavouriteScreen(homeViewModel, navController)
+            }
+            composable("favourite_details_screen") {
+                FavouriteDetailScreen(homeViewModel = homeViewModel, navController = navController)
             }
         }
     }

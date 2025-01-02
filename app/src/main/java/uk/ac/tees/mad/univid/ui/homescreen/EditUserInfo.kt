@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
@@ -42,24 +44,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import uk.ac.tees.mad.univid.R
 import uk.ac.tees.mad.univid.authentication.viewmodel.AuthViewModel
+import uk.ac.tees.mad.univid.mainscreen.viewmodel.HomeViewModel
 import uk.ac.tees.mad.univid.ui.theme.poppinsFam
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun EditUserInformation(
     authViewModel: AuthViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    homeViewModel: HomeViewModel
 ){
+
+    val width = LocalConfiguration.current.screenWidthDp.dp * 0.6f
 
     val context = LocalContext.current
 
@@ -119,7 +131,7 @@ fun EditUserInformation(
         }
     }
 
-// ImageSourceDialog - launch permission requests
+    // ImageSourceDialog - launch permission requests
     if (showImageDialog) {
         ImageSourceDialog(
             onDismiss = { showImageDialog = false },
@@ -153,9 +165,14 @@ fun EditUserInformation(
                 .fillMaxWidth(0.9f),
             shape = RoundedCornerShape(20.dp)
         ){
-            Image(
-                painter = painterResource(id = R.drawable.avatar),
-                contentDescription = "Profile picture"
+            GlideImage(
+                model = currentUser?.profileImgUrl,
+                contentDescription = "Profile Picture",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(width)
+                    .fillMaxWidth(),
+                failure = placeholder(R.drawable.avatar)
             )
         }
         Spacer(modifier = Modifier.weight(0.2f))
